@@ -7,7 +7,7 @@ class StringValidator extends Validator<String> {
   /// Ensures the field is not null or empty.
   StringValidator required({String message = "Field is required"}) {
     return addRule((value) =>
-    value != null && value.isEmpty ? message : null) as StringValidator;
+    (value == null || value.isEmpty) ? message : null) as StringValidator;
   }
 
   /// Ensures the string has at least [length] characters.
