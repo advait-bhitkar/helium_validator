@@ -3,7 +3,7 @@ import 'package:helium_flutter_validator/helium_flutter_validator.dart';
 
 void main() {
   group('CustomValidator - Password Validation', () {
-    final passwordValidator = V.custom().custom((value) {
+    final passwordValidator = V.custom().addRules((value) {
       if (value == null || value.isEmpty) return "Password is required";
       if (value.length < 8) return "Password must be at least 8 characters";
       if (!RegExp(r'[A-Z]').hasMatch(value)) return "Must contain an uppercase letter";

@@ -8,7 +8,7 @@ class CustomValidator<T> extends Validator<T> {
   ///
   /// The [rule] function takes an input value of type [T] and returns
   /// an error message if validation fails, or `null` if validation passes.
-  CustomValidator<T> custom(String? Function(T? value) rule) {
+  CustomValidator<T> addRules(String? Function(T? value) rule) {
     return addRule(rule) as CustomValidator<T>;
   }
 }
