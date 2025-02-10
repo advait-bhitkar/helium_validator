@@ -1,0 +1,1 @@
+self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/advait.bitkarthirdwavecoffee.in/Documents/twc_work/helium_flutter_validator/docs/app/layout\":[\"static/media/066f4f5732c59a07-s.p.woff2\",\"static/media/7cb331c8ee46479c-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"
