@@ -38,10 +38,16 @@ class StringValidator extends Validator<String> {
 
   /// Validates that the string is a properly formatted URL.
   StringValidator url({String message = "Invalid URL"}) {
-    return addRule((value) =>
-    value != null && Uri.tryParse(value)?.hasAbsolutePath == true
-        ? null
-        : message) as StringValidator;
+    return addRule((value) {
+      if (value == null) return message;
+
+      final uri = Uri.tryParse(value);
+      if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
+        return message;
+      }
+
+      return null;
+    }) as StringValidator;
   }
 
   /// Ensures the string matches the provided [pattern].
