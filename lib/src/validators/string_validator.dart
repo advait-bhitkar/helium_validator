@@ -169,4 +169,16 @@ class StringValidator extends Validator<String> {
   StringValidator base64({String message = "Invalid Base64 format"}) {
     return regex(RegExp(r'^(?:[A-Za-z0-9+\/]{4})*={0,2}$'), message: message);
   }
+
+  /// Ensures the string is a palindrome (reads the same forward and backward).
+  StringValidator isPalindrome({String message = "String is not a palindrome"}) {
+    return addRule((value) {
+      if (value == null || value.isEmpty) {
+        return message;
+      }
+      String normalized = value.replaceAll(RegExp(r'[\W_]+'), '').toLowerCase();
+      String reversed = normalized.split('').reversed.join('');
+      return normalized == reversed ? null : message;
+    }) as StringValidator;
+  }
 }

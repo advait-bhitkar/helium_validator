@@ -138,4 +138,18 @@ class NumberValidator extends Validator<String> {
     if (value is String) return num.tryParse(value); // Convert string to num
     return null; // Invalid type
   }
+
+  /// Ensures the numeric string is a palindrome.
+  NumberValidator isPalindrome({String message = "Number is not a palindrome"}) {
+    return addRule((value) {
+      if (value == null || value.trim().isEmpty) {
+        return message;
+      }
+
+      final String numStr = value.toString();
+      final String reversed = numStr.split('').reversed.join('');
+
+      return numStr == reversed ? null : message;
+    }) as NumberValidator;
+  }
 }
