@@ -142,6 +142,9 @@ class NumberValidator extends Validator<String> {
   /// Ensures the numeric string is a palindrome.
   NumberValidator isPalindrome({String message = "Number is not a palindrome"}) {
     return addRule((value) {
+      final num? numValue = _parseNumber(value);
+      if (numValue == null) return "Must be a valid number";
+
       if (value == null || value.trim().isEmpty) {
         return message;
       }
