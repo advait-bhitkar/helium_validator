@@ -1,4 +1,4 @@
-import '../helium_flutter_validator.dart';
+import 'custom_validator.dart';
 import 'validators/date_validator.dart';
 import 'validators/list_validator.dart';
 import 'validators/object_validator.dart';
