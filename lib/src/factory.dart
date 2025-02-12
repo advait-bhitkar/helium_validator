@@ -3,14 +3,14 @@ import 'validators/date_validator.dart';
 import 'validators/list_validator.dart';
 import 'validators/object_validator.dart';
 import 'validators/string_validator.dart';
-import 'validators/number_validators.dart';
+import 'validators/number_validator.dart';
 import 'validators/boolean_validator.dart';
 
 /// A utility class providing quick access to various validators.
 ///
 /// This class serves as a shorthand factory for creating different types of validators, 
 /// making validation logic more readable and concise.
-class V {
+abstract class V {
   /// Returns a validator for string values.
   static StringValidator string() => StringValidator();
 
