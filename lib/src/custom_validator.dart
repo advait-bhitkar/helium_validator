@@ -2,8 +2,14 @@ import 'validator.dart';
 
 /// A validator that allows custom validation logic.
 ///
-/// This enables defining validation rules dynamically using a custom function.
+/// Enables defining validation rules dynamically using a custom function.
 class CustomValidator<T> extends Validator<T> {
+  /// Custom parsing logic (optional)
+  final T? Function(String?)? _customParser;
+
+  /// Constructor with optional custom parser
+  CustomValidator({T? Function(String?)? customParser}) : _customParser = customParser;
+
   /// Adds a custom validation rule.
   ///
   /// The [rule] function takes an input value of type [T] and returns
@@ -14,13 +20,30 @@ class CustomValidator<T> extends Validator<T> {
     return this;
   }
 
+  /// Parses a string input into type `T`
   @override
   T? parseValue(String? input) {
     if (input == null) return null;
 
-    if (T == String) return input as T;
-    if (T == num) return num.tryParse(input) as T?;
-    if (T == bool) return _parseBoolean(input) as T?;
+    if (_customParser != null) {
+      return _customParser!(input);
+    }
+
+    if (T == String) {
+      return input as T;
+    } else if (T == int) {
+      final parsed = int.tryParse(input);
+      return parsed as T?;
+    } else if (T == double) {
+      final parsed = double.tryParse(input);
+      return parsed as T?;
+    } else if (T == num) {
+      final parsed = num.tryParse(input);
+      return parsed as T?;
+    } else if (T == bool) {
+      final parsed = _parseBoolean(input);
+      return parsed as T?;
+    }
 
     return null; // Unsupported type
   }

@@ -38,6 +38,12 @@ class _MyFormState extends State<MyForm> {
 
   @override
   Widget build(BuildContext context) {
+
+    final intValidator = CustomValidator<int>()
+      ..addRule((value) => value != null && value < 0 ? "Must be non-negative" : null);
+
+    print(intValidator.validate(12));  // 123
+    print(intValidator.validate(-1));       // "Must be non-negative" (invalid)
      final nameValidator = CompositeValidator([ageValidator2, ageValidator]);
     return Form(
       key: _formKey,
@@ -51,7 +57,7 @@ class _MyFormState extends State<MyForm> {
           TextFormField(
             decoration: InputDecoration(labelText: 'Age'),
             keyboardType: TextInputType.number,
-            validator: ageValidator.build(),
+            validator: intValidator.build(),
           ),
           SizedBox(height: 20),
           ElevatedButton(
