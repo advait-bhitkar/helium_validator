@@ -54,9 +54,9 @@ class ObjectValidator<T> extends Validator<Map<String, dynamic>> {
 
   /// Validates the object against the schema
   @override
-  List<String> validate(Map<String, dynamic>? value, {bool returnAllErrors = false}) {
-    if (value == null) return ["Object cannot be null"];
-    if (value is! Map<String, dynamic>) return ["Invalid object format"];
+  Object validate(Map<String, dynamic>? value, {bool returnAllErrors = false}) {
+    if (value == null) return "Object cannot be null";
+    if (value is! Map<String, dynamic>) return "Invalid object format";
 
     List<String> errors = [];
 
@@ -71,13 +71,18 @@ class ObjectValidator<T> extends Validator<Map<String, dynamic>> {
       } else {
         final validator = _schema[key]!;
         final fieldErrors = validator.validate(value[key], returnAllErrors: returnAllErrors);
-        if (fieldErrors != null) {
+
+        if (fieldErrors is String) {
+          // If it's a single error string, return immediately if returnAllErrors is false
+          if (!returnAllErrors) return "$key: $fieldErrors";
+          errors.add("$key: $fieldErrors");
+        } else if (fieldErrors is List<String>) {
           errors.addAll(fieldErrors.map((e) => "$key: $e"));
         }
       }
     }
 
-    return errors.isEmpty ? [] : errors;
+    return returnAllErrors ? errors : (errors.isNotEmpty ? errors.first : []);
   }
 
   @override

@@ -12,13 +12,13 @@ abstract class Validator<T> {
 
   /// Validates the given value and returns a list of errors.
   /// Returns an empty list if the value is valid.
-  List<String> validate(T? value, {bool returnAllErrors = false}) {
+  Object validate(T? value, {bool returnAllErrors = false}) {
     final List<String> errors = [];
 
     for (var rule in _rules) {
       final result = rule(value);
       if (result != null) {
-        if (!returnAllErrors) return [result]; // Return first error immediately
+        if (!returnAllErrors) return result; // Return first error immediately
         errors.add(result);
       }
     }
@@ -45,10 +45,12 @@ abstract class Validator<T> {
       }
 
       // Validate the parsed value
-      final errors = validate(parsedValue, returnAllErrors: returnAllErrors);
-      if (errors.isEmpty) return null;
+      final result = validate(parsedValue, returnAllErrors: returnAllErrors);
 
-      return returnAllErrors ? errors.join(", ") : errors.first;
+      if (result is String) return result; // Single error as a string
+      if (result is List<String> && result.isNotEmpty) return result.join(", ");
+
+      return null; // No errors
     };
   }
 }
