@@ -33,21 +33,12 @@ class StringValidator extends Validator<String> {
 
   /// Validates that the string is a properly formatted email.
   StringValidator email({String message = "Invalid email"}) {
-    return regex(RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'), message: message);
+    return regex(RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'), message: message);
   }
 
   /// Validates that the string is a properly formatted URL.
   StringValidator url({String message = "Invalid URL"}) {
-    return addRule((value) {
-      if (value == null) return message;
-
-      final uri = Uri.tryParse(value);
-      if (uri == null || !uri.hasScheme || !uri.hasAuthority) {
-        return message;
-      }
-
-      return null;
-    }) as StringValidator;
+     return regex(RegExp(r'^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$'), message: message);
   }
 
   /// Ensures the string matches the provided [pattern].
@@ -149,6 +140,11 @@ class StringValidator extends Validator<String> {
     return regex(RegExp(r'^[a-zA-Z0-9]+$'), message: message);
   }
 
+  /// Ensures string contains only numeric digits (0-9)
+  StringValidator isNumeric({String message = "Must contain only numbers"}) {
+    return regex(RegExp(r'^\d+$'), message: message);
+  }
+
   /// Ensures the string is a valid slug (lowercase, alphanumeric, hyphens).
   StringValidator slug({String message = "Invalid slug"}) {
     return regex(RegExp(r'^[a-z0-9]+(?:-[a-z0-9]+)*$'), message: message);
@@ -157,7 +153,7 @@ class StringValidator extends Validator<String> {
   /// Ensures the string is a valid credit card number.
   StringValidator creditCard({String message = "Invalid credit card"}) {
     return regex(
-        RegExp(r'^[3-6]\d{3}[\s\-]?\d{4}[\s\-]?\d{4}[\s\-]?\d{4}$'),
+        RegExp(r'^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9]{2})[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$'),
         message: message);
   }
 
@@ -173,7 +169,7 @@ class StringValidator extends Validator<String> {
 
   /// Ensures the string is in valid Base64 encoding.
   StringValidator base64({String message = "Invalid Base64 format"}) {
-    return regex(RegExp(r'^(?:[A-Za-z0-9+\/]{4})*={0,2}$'), message: message);
+    return regex(RegExp(r'^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$'), message: message);
   }
 
   /// Ensures the string is a palindrome (reads the same forward and backward).
@@ -190,7 +186,6 @@ class StringValidator extends Validator<String> {
 
   @override
   String? parseValue(String? input) {
-    // TODO: implement parseValue
     return input;
   }
 }
