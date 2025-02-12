@@ -8,8 +8,8 @@ import 'validators/boolean_validator.dart';
 
 /// A utility class providing quick access to various validators.
 ///
-/// This class acts as a shorthand factory for creating validators,
-/// making the validation logic more readable and concise.
+/// This class serves as a shorthand factory for creating different types of validators, 
+/// making validation logic more readable and concise.
 class V {
   /// Returns a validator for string values.
   static StringValidator string() => StringValidator();
@@ -24,10 +24,10 @@ class V {
   static DateValidator date() => DateValidator();
 
   /// Returns a validator for list values.
-  static ListValidator list() => ListValidator();
+  static ListValidator<T> list<T>() => ListValidator<T>();
 
   /// Returns a validator for object values (e.g., maps, complex structures).
-  static ObjectValidator object() => ObjectValidator();
+  static ObjectValidator<T> object<T>() => ObjectValidator<T>();
 
   /// Returns a custom validator for defining custom validation rules.
   static CustomValidator custom() => CustomValidator();

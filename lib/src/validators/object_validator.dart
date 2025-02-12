@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart'; // for mapEquals
 import '../validator.dart';
 
-class ObjectValidator extends Validator<Map<String, dynamic>> {
+class ObjectValidator<T> extends Validator<Map<String, dynamic>> {
   final Map<String, Validator> _schema = {};
   final Set<String> _optionalFields = {};
   bool _allowExtraKeys = false;

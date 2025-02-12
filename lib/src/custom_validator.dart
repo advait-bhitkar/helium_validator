@@ -8,6 +8,7 @@ class CustomValidator<T> extends Validator<T> {
   ///
   /// The [rule] function takes an input value of type [T] and returns
   /// an error message if validation fails, or `null` if validation passes.
+  @override
   CustomValidator<T> addRule(String? Function(T? value) rule) {
     super.addRule(rule);
     return this;
