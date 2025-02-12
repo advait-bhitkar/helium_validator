@@ -3,7 +3,7 @@ import 'validators/date_validator.dart';
 import 'validators/list_validator.dart';
 import 'validators/object_validator.dart';
 import 'validators/string_validator.dart';
-import 'validators/number_validator.dart';
+import 'validators/number_validators.dart';
 import 'validators/boolean_validator.dart';
 
 /// A utility class providing quick access to various validators.
