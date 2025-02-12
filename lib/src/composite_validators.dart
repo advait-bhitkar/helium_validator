@@ -18,13 +18,14 @@ class CompositeValidator<T> extends Validator<T> {
 
   @override
   T? parseValue(String? input) {
-    // Try to use `parseValue` from the first validator that implements it
+    if (validators.isEmpty) return null;
+
     for (var validator in validators) {
       try {
         final parsed = validator.parseValue(input);
         if (parsed != null) return parsed;
-      } catch (_) {
-        // Ignore errors and continue
+      } catch (e) {
+        print("Warning: Validator failed to parse value '$input' - $e");
       }
     }
     return null; // No valid parsing found

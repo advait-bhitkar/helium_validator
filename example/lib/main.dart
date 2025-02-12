@@ -32,8 +32,8 @@ class _MyFormState extends State<MyForm> {
   final _formKey = GlobalKey<FormState>();
 
   var emailValidator = V.string().required().email().alpha();
-  var ageValidator = V.number().required().min(18);
-  var ageValidator2 = V.number().required().min(18);
+  var ageValidator = V.number().required().isPalindrome();
+  var ageValidator2 = V.number().required().isWholeNumber();
 
 
   @override
@@ -44,7 +44,7 @@ class _MyFormState extends State<MyForm> {
 
     print(intValidator.validate(12));  // 123
     print(intValidator.validate(-1));       // "Must be non-negative" (invalid)
-     final nameValidator = CompositeValidator([ageValidator2, ageValidator]);
+     final comValidator = CompositeValidator([ageValidator2, ageValidator]);
     return Form(
       key: _formKey,
       child: Column(
@@ -57,7 +57,7 @@ class _MyFormState extends State<MyForm> {
           TextFormField(
             decoration: InputDecoration(labelText: 'Age'),
             keyboardType: TextInputType.number,
-            validator: intValidator.build(),
+            validator: comValidator.build(),
           ),
           SizedBox(height: 20),
           ElevatedButton(
