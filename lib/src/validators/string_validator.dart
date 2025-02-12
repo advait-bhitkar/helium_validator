@@ -187,4 +187,10 @@ class StringValidator extends Validator<String> {
       return normalized == reversed ? null : message;
     }) as StringValidator;
   }
+
+  @override
+  String? parseValue(String? input) {
+    // TODO: implement parseValue
+    return input;
+  }
 }

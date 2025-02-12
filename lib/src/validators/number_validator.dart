@@ -1,11 +1,11 @@
 import '../validator.dart';
 
 /// `NumberValidator` provides validation rules for numeric values.
-class NumberValidator extends Validator<String> {
+class NumberValidator extends Validator<num> {
   /// Ensures the value is not null.
   NumberValidator required({String message = "Field is required"}) {
     return addRule((value) {
-      if (value == null || (value.trim().isEmpty)) {
+      if (value == null) {
         return message;
       }
       return null;
@@ -145,7 +145,7 @@ class NumberValidator extends Validator<String> {
       final num? numValue = _parseNumber(value);
       if (numValue == null) return "Must be a valid number";
 
-      if (value == null || value.trim().isEmpty) {
+      if (value == null) {
         return message;
       }
 
@@ -155,4 +155,36 @@ class NumberValidator extends Validator<String> {
       return numStr == reversed ? null : message;
     }) as NumberValidator;
   }
+
+  /// Custom build method to work with `TextFormField`, which provides `String`
+  String? Function(String?) buildForTextField() {
+    return (String? value) {
+      final num? parsedValue = num.tryParse(value ?? "");
+      return validate(parsedValue, returnAllErrors: false) as String?;
+    };
+  }
+  //
+  // /// Correctly overrides `build()` for `num` as expected by `Validator<num>`
+  //
+  // @override
+  // String? Function(String?) build() {
+  //   return (String? value) {
+  //     final num? parsedValue = num.tryParse(value ?? "");
+  //     return validate(parsedValue, returnAllErrors: false) as String?;
+  //   };
+  // }
+
+  @override
+  num? parseValue(String? input) {
+    return num.tryParse(input ?? "");
+  }
+
+  /// Override `build()` to accept `String?` input instead of `num?`
+  // @override
+  // String? Function(String?) build() {
+  //   return (String? value) {
+  //     final num? parsedValue = num.tryParse(value ?? "");
+  //     return validate(parsedValue, returnAllErrors: false) as String?;
+  //   };
+  // }
 }

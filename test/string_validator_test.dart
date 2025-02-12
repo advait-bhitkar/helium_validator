@@ -2,6 +2,54 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:helium_flutter_validator/helium_flutter_validator.dart';
 
 void main() {
+  group('StringValidator - required() with custom message', () {
+    final defaultValidator = V.string().required();
+    final customValidator = V.string().required(message: "This field cannot be empty");
+
+    test('should return null when value is a non-empty string', () {
+      expect(defaultValidator.validate('Hello'), isNull);
+    });
+
+    test('should return default error message when value is null', () {
+      expect(defaultValidator.validate(null), "Field is required");
+    });
+
+    test('should return default error message when value is an empty string', () {
+      expect(defaultValidator.validate(''), "Field is required");
+    });
+
+    /// ⚠️ Edge Cases
+    test('should return default error message when value contains only whitespace', () {
+      expect(defaultValidator.validate('   '), "Field is required");
+    });
+
+    test('should return null for a string with whitespace but containing characters', () {
+      expect(defaultValidator.validate('  Hello  '), isNull);
+    });
+
+    /// 📝 **Custom Message Tests**
+    test('should return custom error message when value is null', () {
+      expect(customValidator.validate(null), "This field cannot be empty");
+    });
+
+    test('should return custom error message when value is an empty string', () {
+      expect(customValidator.validate(''), "This field cannot be empty");
+    });
+
+    test('should return custom error message when value contains only whitespace', () {
+      expect(customValidator.validate('   '), "This field cannot be empty");
+    });
+
+    /// 🔗 **Chained Validation**
+    test('should work correctly when chaining required() and minLength()', () {
+      final chainValidator = StringValidator().required().minLength(3);
+
+      expect(chainValidator.validate(''), "Field is required");
+      expect(chainValidator.validate('Hi'), "Must be at least 3 characters");
+      expect(chainValidator.validate('Hello'), isNull);
+    });
+  });
+
   group('StringValidator Tests', () {
     test('required() - should return error when value is null or empty', () {
       final validator = V.string().required();

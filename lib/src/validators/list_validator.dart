@@ -45,4 +45,10 @@ class ListValidator<T> extends Validator<List<T>> {
         : null
     ) as ListValidator<T>;
   }
+
+  @override
+  List<T>? parseValue(String? input) {
+    // TODO: implement parseValue
+    throw UnimplementedError();
+  }
 }

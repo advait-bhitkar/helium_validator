@@ -126,4 +126,10 @@ class DateValidator extends Validator<String> {
   String _formatDate(DateTime date) {
     return _dateFormat.format(date);
   }
+
+  @override
+  String? parseValue(String? input) {
+    // TODO: implement parseValue
+    throw UnimplementedError();
+  }
 }

@@ -33,20 +33,19 @@ class _MyFormState extends State<MyForm> {
 
   var emailValidator = V.string().required().email().alpha();
   var ageValidator = V.number().required().min(18);
+  var ageValidator2 = V.number().required().min(18);
 
 
   @override
   Widget build(BuildContext context) {
-
-    final nameValidator = CompositeValidator([emailValidator, ageValidator]);
-
+     final nameValidator = CompositeValidator([ageValidator2, ageValidator]);
     return Form(
       key: _formKey,
       child: Column(
         children: [
           TextFormField(
             decoration: InputDecoration(labelText: 'Email'),
-            validator: nameValidator.buildListValidator(),
+            validator: emailValidator.build(),
           ),
           SizedBox(height: 10),
           TextFormField(
