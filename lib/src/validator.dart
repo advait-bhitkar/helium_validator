@@ -12,7 +12,7 @@ abstract class Validator<T> {
 
   /// Validates the given value and returns a list of errors.
   /// Returns an empty list if the value is valid.
-  Object validate(T? value, {bool returnAllErrors = false}) {
+  Object? validate(T? value, {bool returnAllErrors = false}) {
     final List<String> errors = [];
 
     for (var rule in _rules) {
@@ -23,7 +23,7 @@ abstract class Validator<T> {
       }
     }
 
-    return errors; // Always return a list (never null)
+    return errors.isEmpty ? null : errors; // Return null if no errors
   }
 
   /// Converts a `String?` input to the required type `T?`.
