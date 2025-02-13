@@ -31,7 +31,7 @@ class MyForm extends StatefulWidget {
 class _MyFormState extends State<MyForm> {
   final _formKey = GlobalKey<FormState>();
 
-  // var emailValidator = V.string().required().email().alpha();
+  var emailValidator = V.string().required().email();
   var ageValidator = NumberValidator().required().isWholeNumber();
   // var ageValidator2 = V.number().required().isWholeNumber().max(8);
 
@@ -47,6 +47,12 @@ class _MyFormState extends State<MyForm> {
     print(ageValidator.validate(double.nan));
     print(ageValidator.validate(null));
     print(ageValidator.validate(-12));
+    print(emailValidator.validate(-12));
+    print(emailValidator.validate(""));
+    print(emailValidator.validate("23"));
+    print(emailValidator.validate(null));
+    print(emailValidator.validate("advait@gmail.com"));
+    print(emailValidator.validate(" "));
 
     // final intValidator = CustomValidator<int>()
     //   ..addRule((value) => value != null && value < 0 ? "Must be non-negative" : null);

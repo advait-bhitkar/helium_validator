@@ -10,7 +10,7 @@ class StringValidator extends Validator<String> {
   /// Ensures the field is not null or empty.
   StringValidator required({String message = "Field is required"}) {
     return addRule((value) =>
-    (value == null || value.isEmpty) ? message : null) as StringValidator;
+    (value == null || value.trim().isEmpty) ? message : null) as StringValidator;
   }
 
   /// Ensures the string has at least [length] characters.
@@ -185,6 +185,26 @@ class StringValidator extends Validator<String> {
       String reversed = normalized.split('').reversed.join('');
       return normalized == reversed ? null : message;
     }) as StringValidator;
+  }
+
+  StringValidator emoji({String message = "Must contain at least one emoji"}) {
+    return regex(RegExp(r'[\u1F600-\u1F64F\u1F300-\u1F5FF\u1F680-\u1F6FF\u2600-\u26FF\u2700-\u27BF]+'), message: message);
+  }
+
+  StringValidator nanoid({String message = "Invalid NanoID"}) {
+    return regex(RegExp(r'^[a-zA-Z0-9_-]{21}$'), message: message);
+  }
+
+  StringValidator cuid({String message = "Invalid CUID"}) {
+    return regex(RegExp(r'^c[0-9a-z]{24,}$'), message: message);
+  }
+
+  StringValidator cuid2({String message = "Invalid CUID2"}) {
+    return regex(RegExp(r'^[0-9a-z]{24,}$'), message: message);
+  }
+
+  StringValidator isoDatetime({String message = "Invalid ISO 8601 datetime"}) {
+    return regex(RegExp(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'), message: message);
   }
 
   @override
