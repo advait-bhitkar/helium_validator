@@ -1,56 +1,93 @@
+/// An abstract class for validating values of type `T`.
+///
+/// This class allows defining and applying validation rules to values of type `T`.
+/// It provides methods for adding rules, validating values, and formatting validation errors.
 abstract class Validator<T> {
   final List<String? Function(T?)> _rules = [];
+  final String invalidTypeMessage;
+
+  /// Creates a validator with a specified message for invalid type errors.
+  Validator({required this.invalidTypeMessage});
 
   /// Returns an immutable list of validation rules.
   List<String? Function(T?)> get rules => List.unmodifiable(_rules);
 
-  /// Adds a validation rule and returns the updated validator.
+  /// Adds a validation rule to the validator.
+  ///
+  /// The rule should be a function that takes a value of type `T?` and returns a
+  /// validation error message as a `String?`, or `null` if the value is valid.
+  ///
+  /// Returns the current validator instance to allow method chaining.
   Validator<T> addRule(String? Function(T?) rule) {
     _rules.add(rule);
     return this;
   }
 
-  /// Validates the given value and returns a list of errors.
-  /// Returns an empty list if the value is valid.
-  Object? validate(T? value, {bool returnAllErrors = false}) {
-    final List<String> errors = [];
+  /// Validates a given value by parsing it into type `T?`, then applying validation rules.
+  ///
+  /// - If the value cannot be parsed into `T?`, returns `invalidTypeMessage`.
+  /// - If no validation errors occur, returns `null`.
+  /// - If validation errors occur:
+  ///   - Returns a single error message if `returnAllErrors` is `false`.
+  ///   - Returns a list of all error messages if `returnAllErrors` is `true`.
+  ///
+  /// The value can be of any type and will be converted to `T?` before validation.
+  Object? validate(dynamic value, {bool returnAllErrors = false}) {
+    final parsedValue = _parseValue(value);
+    if (parsedValue == null) return invalidTypeMessage;
 
-    for (var rule in _rules) {
-      final result = rule(value);
-      if (result != null) {
-        if (!returnAllErrors) return result; // Return first error immediately
-        errors.add(result);
-      }
-    }
-
-    return errors.isEmpty ? null : errors; // Return null if no errors
+    final errors = _rules.map((rule) => rule(parsedValue)).whereType<String>().toList();
+    return _formatErrors(errors, returnAllErrors);
   }
 
-  /// Converts a `String?` input to the required type `T?`.
-  /// Must be implemented by subclasses.
+  /// Validates a value of type `T?` directly, skipping parsing.
+  ///
+  /// - If the value is `null`, returns `invalidTypeMessage`.
+  /// - Otherwise, applies validation rules and returns the result.
+  Object? validateStrict(T? value, {bool returnAllErrors = false}) {
+    return value == null ? invalidTypeMessage : validate(value, returnAllErrors: returnAllErrors);
+  }
+
+  /// Converts a `String?` input into a value of type `T?`.
+  ///
+  /// This method should be implemented by subclasses to define how values should be parsed.
   T? parseValue(String? input);
 
-  /// Builds a function that validates a `String?` input by parsing it into `T?`.
-  /// Allows customization of error handling.
-  String? Function(String?) build({
-    bool returnAllErrors = false,
-    String invalidInputMessage = "Invalid input format",
-  }) {
-    return (String? value) {
-      final T? parsedValue = parseValue(value);
+  /// Builds a function that validates a `String?` input.
+  ///
+  /// - Parses the input into `T?`.
+  /// - Applies validation rules.
+  /// - Returns a formatted error message if validation fails, or `null` if valid.
+  ///
+  /// Useful for integrating validation into form fields.
+  String? Function(String?) build({bool returnAllErrors = false}) {
+    return (String? value) => _formatErrors(
+      validate(value, returnAllErrors: returnAllErrors),
+      returnAllErrors,
+    );
+  }
 
-      // Handle invalid parsing cases
-      if (parsedValue == null && value != null) {
-        return invalidInputMessage;
-      }
+  /// Attempts to parse a given value into type `T?`, handling NaN cases explicitly.
+  ///
+  /// - If `value` is already of type `T`, it is returned as is.
+  /// - Otherwise, `value` is converted to a string and parsed using `parseValue()`.
+  /// - If `parseValue()` returns `NaN` for a numeric type, `null` is returned.
+  T? _parseValue(dynamic value) {
+    if (value is T) return value;
+    final parsed = parseValue(value?.toString());
+    return (parsed is num && parsed.isNaN) ? null : parsed;
+  }
 
-      // Validate the parsed value
-      final result = validate(parsedValue, returnAllErrors: returnAllErrors);
-
-      if (result is String) return result; // Single error as a string
-      if (result is List<String> && result.isNotEmpty) return result.join(", ");
-
-      return null; // No errors
-    };
+  /// Formats validation errors into a readable string.
+  ///
+  /// - If there is a single error message, it is returned as a `String`.
+  /// - If `returnAllErrors` is `true`, multiple errors are joined into a single string.
+  /// - If there are no errors, returns `null`.
+  String? _formatErrors(Object? errors, bool returnAllErrors) {
+    if (errors is String) return errors;
+    if (errors is List<String> && errors.isNotEmpty) {
+      return returnAllErrors ? errors.join(", ") : errors.first;
+    }
+    return null;
   }
 }

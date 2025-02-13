@@ -5,8 +5,8 @@ import '../validator.dart';
 class DateValidator extends Validator<String> {
   late final DateFormat _dateFormat;
 
-  /// Creates a `DateValidator` with a **custom date format** (default: `yyyy-MM-dd`).
-  DateValidator({String format = 'yyyy-MM-dd'}) {
+  /// Creates a [DateValidator] with a **custom date format** (default: `yyyy-MM-dd`) and a custom error message for invalid type.
+  DateValidator({String format = 'yyyy-MM-dd'}) : super(invalidTypeMessage: 'Must be a valid date') {
     _dateFormat = DateFormat(format);
   }
 

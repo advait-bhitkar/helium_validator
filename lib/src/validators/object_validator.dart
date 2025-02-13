@@ -3,6 +3,10 @@ import 'package:flutter/foundation.dart'; // for mapEquals
 import '../validator.dart';
 
 class ObjectValidator<T> extends Validator<Map<String, dynamic>> {
+
+  /// Creates a [ObjectValidator] with a custom error message for invalid types.
+  ObjectValidator({super.invalidTypeMessage = "Must be a valid object"});
+
   final Map<String, Validator> _schema = {};
   final Set<String> _optionalFields = {};
   bool _allowExtraKeys = false;
@@ -54,7 +58,7 @@ class ObjectValidator<T> extends Validator<Map<String, dynamic>> {
 
   /// Validates the object against the schema
   @override
-  Object? validate(Map<String, dynamic>? value, {bool returnAllErrors = false}) {
+  Object? validate(dynamic value, {bool returnAllErrors = false}) {
     if (value == null) return "Object cannot be null";
     if (value is! Map<String, dynamic>) return "Invalid object format";
 

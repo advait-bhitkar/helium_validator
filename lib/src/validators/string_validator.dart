@@ -4,6 +4,9 @@ import '../validator.dart';
 /// A validator for string values, providing various validation rules such as length constraints,
 /// format checks (email, URL, UUID), and pattern matching.
 class StringValidator extends Validator<String> {
+  /// Creates a [StringValidator] with a custom error message for invalid types.
+  StringValidator({super.invalidTypeMessage = "Must be a valid string"});
+
   /// Ensures the field is not null or empty.
   StringValidator required({String message = "Field is required"}) {
     return addRule((value) =>

@@ -8,7 +8,7 @@ import 'validators/boolean_validator.dart';
 
 /// A utility class providing quick access to various validators.
 ///
-/// This class serves as a shorthand factory for creating different types of validators, 
+/// This class serves as a shorthand factory for creating different types of validators,
 /// making validation logic more readable and concise.
 abstract class V {
   /// Returns a validator for string values.

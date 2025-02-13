@@ -2,7 +2,9 @@ import '../validator.dart';
 
 /// A validator for boolean values, ensuring they meet specific conditions.
 class BooleanValidator extends Validator<dynamic> {
-  BooleanValidator();
+  /// Creates a [BooleanValidator] with a custom error message for invalid types.
+  BooleanValidator({super.invalidTypeMessage = "Must be a valid boolean value"});
+
   /// Ensures the value is `true`.
   BooleanValidator isTrue({String message = "Must be true"}) {
     return addRule((value) => value == true ? null : message) as BooleanValidator;

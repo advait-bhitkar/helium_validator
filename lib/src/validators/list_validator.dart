@@ -2,6 +2,10 @@ import '../validator.dart';
 
 /// `ListValidator` provides validation rules for lists of type `<T>`.
 class ListValidator<T> extends Validator<List<T>> {
+
+  /// Creates a [ListValidator] with a custom error message for invalid types.
+  ListValidator({super.invalidTypeMessage = "Must be a valid list"});
+
   /// Ensures the list has at least [length] items.
   ListValidator<T> minLength(int length, {String? message}) {
     return addRule((value) =>

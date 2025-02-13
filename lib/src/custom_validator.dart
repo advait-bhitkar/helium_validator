@@ -8,7 +8,7 @@ class CustomValidator<T> extends Validator<T> {
   final T? Function(String?)? _customParser;
 
   /// Constructor with optional custom parser
-  CustomValidator({T? Function(String?)? customParser}) : _customParser = customParser;
+  CustomValidator({T? Function(String?)? customParser, super.invalidTypeMessage  = "Must be a valid type"}) : _customParser = customParser;
 
   /// Adds a custom validation rule.
   ///
