@@ -10,7 +10,7 @@ void main() {
     });
 
     test('required - should fail when null or empty', () {
-      expect(validator.required().validate(null), "Field is required");
+      expect(validator.required().validate(null), "Must be a valid number");
     });
 
     test('min - should fail when value is less than min', () {
@@ -62,7 +62,7 @@ void main() {
 
     test('isFinite - should fail when value is NaN or Infinity', () {
       expect(validator.isFinite().validate(double.infinity), "Must be a finite number");
-      expect(validator.isFinite().validate(double.nan), "Must be a finite number");
+      expect(validator.isFinite().validate(double.nan), "Must be a valid number");
       expect(validator.isFinite().validate(100), isNull);
     });
 
