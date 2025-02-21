@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../validator.dart';
 import 'dart:math';
 
@@ -8,7 +10,7 @@ class NumberValidator extends Validator<num> {
 
   /// Ensures the value is required (not null or NaN).
   NumberValidator required({String message = "Field is required"}) {
-    return _addRule((value) => (value?.isNaN == true) ? message : null, allowEmpty: false);
+    return _addRule((value) => (value == null || value.isNaN == true) ? message : null);
   }
 
   /// Ensures the value is at least [minValue].
@@ -50,11 +52,10 @@ class NumberValidator extends Validator<num> {
   NumberValidator precision(int decimalPlaces) {
     return _addRule((value) {
       if (value == null) return null;
-      final String numString = value.toString();
-      final int decimalIndex = numString.indexOf('.');
-      if (decimalIndex == -1) return null;
-      final int actualPrecision = numString.length - decimalIndex - 1;
-      return (actualPrecision > decimalPlaces) ? "Must have at most $decimalPlaces decimal places" : null;
+      final factor = pow(10, decimalPlaces);
+      return ((value * factor).round().toDouble() / factor == value)
+          ? null
+          : "Must have at most $decimalPlaces decimal places";
     });
   }
 
@@ -79,17 +80,16 @@ class NumberValidator extends Validator<num> {
 
   /// Ensures the value is a multiple of [factor].
   NumberValidator multipleOf(num factor, {String? message}) {
-    return _addRule((value) =>
-    (value != null && value % factor == 0)
-        ? null
-        : (message ?? "Must be a multiple of $factor")
-    );
+    return _addRule((value) {
+      if (value == null) return null;
+      final remainder = (value / factor) % 1;
+      return (remainder.abs() < 1e-10) ? null : (message ?? "Must be a multiple of $factor");
+    });
   }
 
   /// Ensures the value is within a safe integer range.
   NumberValidator safe({num? min, num? max, String? message}) {
-    // Use JavaScript safe integer range for Web, otherwise no limit
-    final bool isWeb = identical(1, 1.0); // A common way to check for Web
+    final bool isWeb = kIsWeb;
     final num minSafe = min ?? (isWeb ? -9007199254740991 : double.negativeInfinity);
     final num maxSafe = max ?? (isWeb ? 9007199254740991 : double.infinity);
 
@@ -103,7 +103,7 @@ class NumberValidator extends Validator<num> {
   NumberValidator isPalindrome({String message = "Number is not a palindrome"}) {
     return _addRule((value) {
       if (value == null) return null;
-      final String numStr = value.toString().replaceAll('.', '');
+      final String numStr = value.abs().toString().replaceAll('.', '');
       final String reversed = numStr.split('').reversed.join('');
       return (numStr == reversed) ? null : message;
     });
@@ -113,7 +113,9 @@ class NumberValidator extends Validator<num> {
   NumberValidator isPrime({String message = "Must be a prime number"}) {
     return _addRule((value) {
       if (value == null || value < 2 || value % 1 != 0) return message;
-      for (int i = 2; i <= sqrt(value).toInt(); i++) {
+      if (value == 2) return null;
+      if (value % 2 == 0) return message;
+      for (int i = 3; i <= sqrt(value).toInt(); i += 2) {
         if (value % i == 0) return message;
       }
       return null;
@@ -137,25 +139,31 @@ class NumberValidator extends Validator<num> {
 
   /// Parses a string input into a numeric value.
   @override
-  num? parseValue(String? input) => (input == null || input.trim().isEmpty) ? double.nan : num.tryParse(input) ?? double.nan;
+  num? parseValue(String? input) => (input == null || input.trim().isEmpty) ? null : num.tryParse(input);
 
-  /// Validates the given value, allowing multiple errors to be returned if [returnAllErrors] is true.
   @override
-  Object? validate(dynamic value, {bool returnAllErrors = false}) {
+  Object? validate(dynamic value, {bool returnAllErrors = false, bool returnAsList = false}) {
+    if (value is String && value.trim().isEmpty) value = null;
 
-    if (value is num && value.isNaN) {
-      return invalidTypeMessage; // "Must be a valid number"
+    if (value is num) {
+      if (value.isNaN || value.isInfinite) {
+        return invalidTypeMessage; // "Must be a valid number"
+      }
+    } else if (value is String && value.isNotEmpty) {
+      final parsed = num.tryParse(value);
+      if (parsed == null || parsed.isInfinite) {
+        return invalidTypeMessage; // "Must be a valid number"
+      }
+      value = parsed; // Convert valid string numbers into num
+    } else if (value is bool || value is List || value is Map || value is Object) {
+      return invalidTypeMessage; // Explicitly handle non-numeric types
     }
 
-    if (value is String && value.trim().isEmpty) value = double.nan;
-    return super.validate(value, returnAllErrors: returnAllErrors);
+    return super.validate(value, returnAllErrors: returnAllErrors, returnAsList: returnAsList);
   }
 
-  /// Checks if a given value is empty (null or NaN).
-  bool _isEmpty(num? value) => value?.isNaN == true;
-
   /// Adds a validation rule to the validator.
-  NumberValidator _addRule(String? Function(num?) rule, {bool allowEmpty = true}) {
-    return addRule((value) => (_isEmpty(value) && allowEmpty) ? null : rule(value)) as NumberValidator;
+  NumberValidator _addRule(String? Function(num?) rule) {
+    return addRule((value) => rule(value)) as NumberValidator;
   }
 }

@@ -129,7 +129,6 @@ class DateValidator extends Validator<String> {
 
   @override
   String? parseValue(String? input) {
-    // TODO: implement parseValue
-    throw UnimplementedError();
+    return input;
   }
 }

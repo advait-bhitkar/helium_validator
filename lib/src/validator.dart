@@ -32,11 +32,11 @@ abstract class Validator<T> {
   ///   - Returns a list of all error messages if `returnAllErrors` is `true`.
   ///
   /// The value can be of any type and will be converted to `T?` before validation.
-  Object? validate(dynamic value, {bool returnAllErrors = false}) {
+  Object? validate(dynamic value, {bool returnAllErrors = false, bool returnAsList = false}) {
     final parsedValue = _parseValue(value);
-    if (parsedValue == null) return invalidTypeMessage;
-
     final errors = _rules.map((rule) => rule(parsedValue)).whereType<String>().toList();
+
+    if (returnAsList) return errors.isEmpty ? null : errors; // Always return a list if requested
     return _formatErrors(errors, returnAllErrors);
   }
 
@@ -44,7 +44,7 @@ abstract class Validator<T> {
   ///
   /// - If the value is `null`, returns `invalidTypeMessage`.
   /// - Otherwise, applies validation rules and returns the result.
-  Object? validateStrict(T? value, {bool returnAllErrors = false}) {
+  Object? validateStrict(T? value, {bool returnAllErrors = false, bool returnAsList = false}) {
     return value == null ? invalidTypeMessage : validate(value, returnAllErrors: returnAllErrors);
   }
 

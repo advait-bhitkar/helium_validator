@@ -37,7 +37,9 @@ class ListValidator<T> extends Validator<List<T>> {
   ListValidator<T> unique({String message = "All elements must be unique"}) {
     return addRule((value) {
       if (value == null) return message;
-      return value.toSet().length == value.length ? null : message;
+      return value
+          .toSet()
+          .length == value.length ? null : message;
     }) as ListValidator<T>;
   }
 
@@ -52,7 +54,31 @@ class ListValidator<T> extends Validator<List<T>> {
 
   @override
   List<T>? parseValue(String? input) {
-    // TODO: implement parseValue
-    throw UnimplementedError();
+    if (input == null || input.trim().isEmpty) return <T>[];
+
+    try {
+      List<T> parsedList;
+      if (T == int) {
+        parsedList = input
+            .split(',')
+            .map((e) => int.tryParse(e.trim()) as T?)
+            .whereType<T>()
+            .toList();
+      } else if (T == double) {
+        parsedList = input
+            .split(',')
+            .map((e) => double.tryParse(e.trim()) as T?)
+            .whereType<T>()
+            .toList();
+      } else {
+        parsedList = input
+            .split(',')
+            .map((e) => e.trim() as T)
+            .toList();
+      }
+      return parsedList;
+    } catch (_) {
+      return null; // Return null if parsing fails
+    }
   }
 }
