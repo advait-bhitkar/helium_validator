@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:helium_flutter_validator/helium_flutter_validator.dart';
 
@@ -348,6 +349,73 @@ void main() {
       expect(validator.validate(double.nan), "Must be a valid number");
       expect(validator.validate("abc"), "Must be a valid number");
       expect(validator.validate([]), "Must be a valid number");
+    });
+
+    group('NumberValidator multipleOf', () {
+      final validator = NumberValidator().multipleOf(5);
+
+      test('Valid multiple', () {
+        expect(validator.validate(10), isNull);
+        expect(validator.validate(-15), isNull);
+        expect(validator.validate(0), isNull);
+      });
+
+      test('Invalid multiple', () {
+        expect(validator.validate(12), 'Must be a multiple of 5');
+        expect(validator.validate(-7), 'Must be a multiple of 5');
+      });
+
+      test('Handles floating-point precision', () {
+        final floatValidator = NumberValidator().multipleOf(0.1);
+        expect(floatValidator.validate(0.2), isNull);
+        expect(floatValidator.validate(0.11), 'Must be a multiple of 0.1');
+      });
+
+      test('Custom error message', () {
+        final customValidator = NumberValidator().multipleOf(3, message: 'Not a multiple of three');
+        expect(customValidator.validate(7), 'Not a multiple of three');
+      });
+
+      test('Null input returns null', () {
+        expect(validator.validate(null), isNull);
+      });
+    });
+
+    group('NumberValidator safe', () {
+      final validator = NumberValidator().safe(min: 10, max: 100);
+      final validator2 = NumberValidator().safe(min: 10);
+
+      test('Valid range', () {
+        expect(validator.validate(10), isNull);
+        expect(validator.validate(50), isNull);
+        expect(validator.validate(100), isNull);
+        expect(validator2.validate(11), isNull);
+      });
+
+      test('Out of range', () {
+        expect(validator.validate(9), 'Number must be between 10 and 100');
+        expect(validator.validate(101), 'Number must be between 10 and 100');
+      });
+
+      test('Handles no min or max', () {
+        final limitValidator = NumberValidator().safe();
+        expect(limitValidator.validate(double.infinity), "Must be a valid number");
+        expect(limitValidator.validate(double.negativeInfinity), "Must be a valid number");
+      });
+
+      test('Web-specific safe range', () {
+        final safeValidator = NumberValidator().safe();
+        if (kIsWeb) {
+          expect(safeValidator.validate(9007199254740992), 'Number must be between -9007199254740991 and 9007199254740991');
+        } else {
+          expect(safeValidator.validate(9007199254740992), isNull);
+        }
+      });
+
+      test('Custom error message', () {
+        final customValidator = NumberValidator().safe(min: 0, max: 50, message: 'Out of allowed range');
+        expect(customValidator.validate(60), 'Out of allowed range');
+      });
     });
   });
 }
