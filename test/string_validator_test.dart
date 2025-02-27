@@ -112,6 +112,8 @@ void main() {
     test('✅ Valid Cases', () {
       expect(validator.validate('http://example.com'), isNull);
       expect(validator.validate('https://www.example.com'), isNull);
+      expect(validator.validate('https://example.com'), isNull);
+      expect(validator.validate('ftp://files.example.com'), isNull);
       expect(validator.validate('ftp://files.example.com'), isNull);
       expect(validator.validate('https://sub.domain.co.uk/path?query=1#fragment'), isNull);
     });
@@ -669,6 +671,22 @@ void main() {
       expect(validator.validate('123@#\$%^&*()_+=-{}|":?><'), "Invalid CUID2"); // Special characters
       expect(validator.validate(''), "Invalid CUID2"); // Empty string
       expect(validator.validate('123 456789abcdefghijklmnopq'), "Invalid CUID2"); // Space included
+    });
+  });
+
+  group('ISO 8601 datetime validation', () {
+    final isoDatetimeValidator = V.string().isoDatetime();
+
+    test('Valid ISO 8601 datetime', () {
+      final validDate = '2023-06-29T12:34:56Z';
+      final result = isoDatetimeValidator.validate(validDate);
+      expect(result, isNull); // No error for valid format
+    });
+
+    test('Invalid ISO 8601 datetime', () {
+      final invalidDate = '2023-06-29T12:34:56'; // Missing 'Z'
+      final result = isoDatetimeValidator.validate(invalidDate);
+      expect(result, 'Invalid ISO 8601 datetime'); // Error message for invalid format
     });
   });
 }

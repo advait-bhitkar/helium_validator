@@ -27,7 +27,7 @@ abstract class V {
   static ListValidator<T> list<T>() => ListValidator<T>();
 
   /// Returns a validator for object values (e.g., maps, complex structures).
-  static ObjectValidator<T> object<T>() => ObjectValidator<T>();
+  static ObjectValidator object<T>() => ObjectValidator();
 
   /// Returns a custom validator for defining custom validation rules.
   static CustomValidator custom() => CustomValidator();

@@ -41,7 +41,7 @@ class StringValidator extends Validator<String> {
 
   /// Validates that the string is a properly formatted URL.
   StringValidator url({String message = "Invalid URL"}) {
-     return regex(RegExp(r'^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$'), message: message);
+     return regex(RegExp (r'^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$'), message: message);
   }
 
   /// Ensures the string matches the provided [pattern].
@@ -271,5 +271,12 @@ class StringValidator extends Validator<String> {
   @override
   String? parseValue(String? input) {
     return input;
+  }
+
+  @override
+  Object? validate(dynamic value,
+      {bool returnAllErrors = false, bool returnAsList = false}) {
+    if (value is num ) return invalidTypeMessage; // "Must be a valid string"
+    return super.validate(value, returnAllErrors: returnAllErrors, returnAsList: returnAsList);
   }
 }
