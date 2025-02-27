@@ -70,6 +70,11 @@ class ListValidator<T> extends Validator<List<T>> {
             .map((e) => double.tryParse(e.trim()) as T?)
             .whereType<T>()
             .toList();
+      } else if (T == String) {
+        parsedList = input
+            .split(',')
+            .map((e) => e.trim() as T)
+            .toList();
       } else {
         parsedList = input
             .split(',')

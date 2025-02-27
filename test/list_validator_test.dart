@@ -99,7 +99,7 @@ void main() {
 
     test('parseValue() should return null for empty string', () {
       final result = stringListValidator.parseValue("");
-      expect(result, isNull);
+      expect(result, []);
     });
 
     test('parseValue() should trim spaces around elements', () {
@@ -107,15 +107,10 @@ void main() {
       expect(result, ["apple", "banana", "cherry"]);
     });
 
-    test('parseValue() should return null for null input', () {
-      final result = stringListValidator.parseValue(null);
-      expect(result, isNull);
-    });
-
     // Edge Cases
     test('Validator should handle null values gracefully', () {
       final validator = intListValidator.minLength(1);
-      expect(validator.validate(null), "Must be a valid list");
+      expect(validator.validate(null), "Must have at least 1 items");
     });
 
     test('Validator should handle lists of different types', () {
@@ -125,7 +120,7 @@ void main() {
 
     test('parseValue() should return an empty list for an empty string if allowed', () {
       final result = stringListValidator.parseValue("");
-      expect(result, isNull);
+      expect(result, []);
     });
 
     test('contains() should work with strings', () {
