@@ -111,9 +111,10 @@ class StringValidator extends Validator<String> {
   StringValidator cidr({String message = "Invalid CIDR notation"}) {
     return regex(
         RegExp(
-            r'^(?:\d{1,3}\.){3}\d{1,3}/[0-9]{1,2}$|^([a-f0-9:]+:+)+[a-f0-9]+/[0-9]{1,3}$'),
-        message: message);
-  }
+            r'^(?:\d{1,3}\.){3}\d{1,3}/(3[0-2]|[12]?[0-9])$' // IPv4 with /0-32
+            r'|^(([0-9a-fA-F]{1,4}:){1,7}:?|::|([0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4})/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$', // IPv6 with /0-128
+            ), message: message);
+    }
 
   /// Ensures the string is a valid JSON.
   StringValidator json({String message = "Invalid JSON"}) {
