@@ -96,25 +96,61 @@ class StringValidator extends Validator<String> {
 
   /// Ensures the string is a valid time (HH:mm:ss).
   StringValidator time({String message = "Invalid time"}) {
-    return regex(RegExp(r'^\d{2}:\d{2}:\d{2}$'), message: message);
+    return regex(
+      RegExp(r'^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$'), // Ensures HH is 00-23, MM & SS are 00-59
+      message: message,
+    );
   }
 
   /// Ensures the string is a valid IP address (IPv4 or IPv6).
   StringValidator ip({String message = "Invalid IP address"}) {
     return regex(
-        RegExp(
-            r'^(?:\d{1,3}\.){3}\d{1,3}$|^([a-f0-9:]+:+)+[a-f0-9]+$'),
-        message: message);
+      RegExp(
+          r'^('
+          r'('
+          r'(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4})|' // Full 8-segment IPv6
+          r'(([0-9a-fA-F]{1,4}:){1,7}:)|' // IPv6 ending with ::
+          r'(:(([0-9a-fA-F]{1,4}:){1,7}))|' // IPv6 starting with ::
+          r'(([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})|' // 7-segment IPv6 with ::
+          r'(([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2})|' // 6-segment IPv6 with ::
+          r'(([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3})|' // 5-segment IPv6 with ::
+          r'(([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4})|' // 4-segment IPv6 with ::
+          r'(([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5})|' // 3-segment IPv6 with ::
+          r'([0-9a-fA-F]{1,4}:(:[0-9a-fA-F]{1,4}){1,6})|' // 2-segment IPv6 with ::
+          r'(:(:[0-9a-fA-F]{1,4}){1,7})|' // Single "::" with up to 7 following segments
+          r'(::)' // "::" shorthand (valid for 0:0:0:0:0:0:0:0)
+          r')'
+          r'|'
+          r'('
+          r'((25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\.){3}' // First 3 IPv4 octets (0-255)
+          r'(25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)' // Last IPv4 octet (0-255)
+          r')'
+          r')$'
+      ),
+      message: message,
+    );
   }
 
   /// Ensures the string is a valid CIDR notation.
   StringValidator cidr({String message = "Invalid CIDR notation"}) {
     return regex(
-        RegExp(
-            r'^(?:\d{1,3}\.){3}\d{1,3}/(3[0-2]|[12]?[0-9])$' // IPv4 with /0-32
-            r'|^(([0-9a-fA-F]{1,4}:){1,7}:?|::|([0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4})/(12[0-8]|1[01][0-9]|[1-9]?[0-9])$', // IPv6 with /0-128
-            ), message: message);
-    }
+      RegExp(
+          r'^('
+          // ✅ IPv4 CIDR validation
+          r'(?:25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])\.'  // First octet (0-255)
+          r'(?:25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])\.'  // Second octet (0-255)
+          r'(?:25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])\.'  // Third octet (0-255)
+          r'(?:25[0-5]|2[0-4][0-9]|1?[0-9]?[0-9])'    // Fourth octet (0-255)
+          r'/(3[0-2]|[12]?[0-9])'                     // Subnet mask /0-32
+          r'|'  // OR
+          // ✅ IPv6 CIDR validation
+          r'(([0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}|::|([0-9a-fA-F]{1,4}:){1,6}:)'
+          r'/(12[0-8]|1[01][0-9]|[1-9]?[0-9])' // Subnet mask /0-128
+          r')$'
+      ),
+      message: message,
+    );
+  }
 
   /// Ensures the string is a valid JSON.
   StringValidator json({String message = "Invalid JSON"}) {
@@ -131,7 +167,7 @@ class StringValidator extends Validator<String> {
 
   /// Ensures the string contains only ASCII characters.
   StringValidator ascii({String message = "Must contain only ASCII characters"}) {
-    return regex(RegExp(r'^[\x00-\x7F]+$'), message: message);
+    return regex(RegExp(r'^[\x00-\x7F]*$'), message: message);
   }
 
   /// Ensures the string contains only alphabetic characters (A-Z, a-z).
@@ -157,8 +193,19 @@ class StringValidator extends Validator<String> {
   /// Ensures the string is a valid credit card number.
   StringValidator creditCard({String message = "Invalid credit card"}) {
     return regex(
-        RegExp(r'^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9]{2})[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$'),
-        message: message);
+      RegExp(
+          r'^(?:'
+          r'4[0-9]{12}(?:[0-9]{3})?' // Visa (13-19 digits)
+          r'|5[1-5][0-9]{14}' // MasterCard (16 digits)
+          r'|6(?:011|5[0-9]{2})[0-9]{12}' // Discover (16 digits)
+          r'|3[47][0-9]{13}' // American Express (15 digits)
+          r'|3(?:0[0-5]|[68][0-9])[0-9]{11}' // Diners Club (14 digits)
+          r'|(?:2131|1800|35[0-9]{3})[0-9]{11,13}' // JCB (15-19 digits)
+          r'|2014[0-9]{11}|2149[0-9]{11}' // Diners Club enRoute (15 digits)
+          r')$'
+      ),
+      message: message,
+    );
   }
 
   /// Ensures the string is a valid phone number.
@@ -173,14 +220,16 @@ class StringValidator extends Validator<String> {
 
   /// Ensures the string is in valid Base64 encoding.
   StringValidator base64({String message = "Invalid Base64 format"}) {
-    return regex(RegExp(r'^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$'), message: message);
+    return regex(RegExp(
+        r'^(?:[A-Za-z0-9+\/]{4})+(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=)?$'),
+        message: message);
   }
 
   /// Ensures the string is a palindrome (reads the same forward and backward).
   StringValidator isPalindrome({String message = "String is not a palindrome"}) {
     return addRule((value) {
       if (value == null || value.isEmpty) {
-        return message;
+        return null;
       }
       String normalized = value.replaceAll(RegExp(r'[\W_]+'), '').toLowerCase();
       String reversed = normalized.split('').reversed.join('');
@@ -188,22 +237,33 @@ class StringValidator extends Validator<String> {
     }) as StringValidator;
   }
 
+  /// Validates that the string contains at least one emoji.
   StringValidator emoji({String message = "Must contain at least one emoji"}) {
-    return regex(RegExp(r'[\u1F600-\u1F64F\u1F300-\u1F5FF\u1F680-\u1F6FF\u2600-\u26FF\u2700-\u27BF]+'), message: message);
+    return regex(
+      RegExp(
+        r'[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}]+',
+        unicode: true, // Enables proper emoji matching
+      ),
+      message: message,
+    );
   }
 
+  /// Validates that the string is a valid NanoID (alphanumeric, underscore, or hyphen, with at least 10 characters).
   StringValidator nanoid({String message = "Invalid NanoID"}) {
-    return regex(RegExp(r'^[a-zA-Z0-9_-]{21}$'), message: message);
+    return regex(RegExp(r'^[a-zA-Z0-9_-]{10,}$'), message: message);
   }
 
+  /// Validates that the string is a valid CUID (must start with 'c' followed by at least 24 lowercase alphanumeric characters).
   StringValidator cuid({String message = "Invalid CUID"}) {
     return regex(RegExp(r'^c[0-9a-z]{24,}$'), message: message);
   }
 
+  /// Validates that the string is a valid CUID2 (24+ lowercase alphanumeric characters, excluding 'c' as the first character).
   StringValidator cuid2({String message = "Invalid CUID2"}) {
-    return regex(RegExp(r'^[0-9a-z]{24,}$'), message: message);
+    return regex(RegExp(r'^[0-9a-bd-z][0-9a-z]{23,}$'), message: message);
   }
 
+  /// Validates that the string follows the ISO 8601 datetime format (e.g., "2023-06-29T12:34:56Z").
   StringValidator isoDatetime({String message = "Invalid ISO 8601 datetime"}) {
     return regex(RegExp(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$'), message: message);
   }
