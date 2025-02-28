@@ -1,5 +1,4 @@
-library helium_flutter_validator;
-
+library;
 export 'src/factory.dart';
 export 'src/custom_validator.dart';
 export 'src/validators/boolean_validator.dart';

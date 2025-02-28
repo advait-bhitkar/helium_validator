@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import '../../helium_flutter_validator.dart';
+import '../../helium_validator.dart';
 import '../validator.dart';
 
 /// A validator for validating object structures (Map<String, dynamic>).

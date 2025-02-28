@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:helium_flutter_validator/helium_flutter_validator.dart';
-import 'package:helium_flutter_validator/src/composite_validator.dart';
+import 'package:helium_validator/helium_validator.dart';
 
 void main() {
   runApp(MyApp());
