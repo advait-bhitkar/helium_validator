@@ -346,7 +346,8 @@ void main() {
   compositeValidator.validate("25");  // ✅ Valid
   compositeValidator.validate("5");   // ❌ Must be at least 10
   compositeValidator.validate("150"); // ❌ Must be at most 100
-  compositeValidator.validate("abc"); // ❌ Invalid number format}  
+  compositeValidator.validate("abc"); // ❌ Invalid number format
+}  
 ```
 
 ## Contributing
