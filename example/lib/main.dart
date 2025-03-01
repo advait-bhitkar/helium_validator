@@ -35,13 +35,14 @@ class _MyFormState extends State<MyForm> {
 
   @override
   Widget build(BuildContext context) {
+
     return Form(
       key: _formKey,
       child: Column(
         children: [
           TextFormField(
             decoration: InputDecoration(labelText: 'Email'),
-            // validator: emailValidator.build(),
+            validator: emailValidator.build(),
           ),
           SizedBox(height: 10),
           TextFormField(
