@@ -1,8 +1,8 @@
-# Helium Flutter Validator
+# Helium Validator
 
 A lightweight, powerful, and extensible validation library for Flutter.
 
-If you find this library helpful, please consider supporting me by giving it a star on GitHub.
+If you find this library helpful, please consider supporting me by giving it a star on [GitHub](https://github.com/advait-bhitkar/helium_validator "GitHub").
 
 ## Introduction
 Helium Flutter Validator is a powerful and flexible validation library for Flutter.
@@ -14,6 +14,7 @@ It provides a fluent API for defining validation rules for strings, numbers, lis
 -   Support for custom validation functions.
 -   Lightweight and easy to integrate.
 -   Works with flutter forms.
+-  Customize error messages.
 
 ## Installation
 To use this validation library in your Dart or Flutter project, follow these steps:
@@ -37,29 +38,62 @@ flutter pub get
 ### **Basic Example**
 ```dart  
 import 'package:helium_validator/helium_validator.dart';
-  
+
 // define the validator
-var emailValidator = V.string().required().email();  
-var ageValidator = V.required().isWholeNumber();
+// chain to add rules
+var emailValidator = V.string().required().email();
+var ageValidator = V.number().required().min(18);
 
 // use .validate for validation
-print(ageValidator.validate('22'));  
+print(ageValidator.validate('22'));
 print(ageValidator.validate('3'));
 
-print(emailValidator.validate("advait@gmail.com"));  
+print(emailValidator.validate("advait@gmail.com"));
 print(emailValidator.validate("advaitgmail.com"));
 ```   
+
+Output :
+```
+ null
+ Must be at least 18
+ null
+ Invalid email
+```
 
 > The validator will return `null`, if no validation error occurs, if there is any error it will return the error in string format.
 
 > To return all the validation errors you can pass the arg - `returnAllErrors = true` this will return all the errors as list.
 
+**Return all validation errors**
+
+```dart  
+import 'package:helium_validator/helium_validator.dart';
+
+// define the validator
+  var ageValidator = V.number().required().min(18).isPrime();
+
+// use validate for validation
+print(ageValidator.validate(returnAllErrors: true, '22'));
+print(ageValidator.validate(returnAllErrors: true, '8'));
+
+print(ageValidator.validate(returnAllErrors: true, returnAsList: true, '22'));
+print(ageValidator.validate(returnAllErrors: true, returnAsList: true, '8'));
+```   
+
+Output:
+```
+ Must be a prime number
+ Must be at least 18, Must be a prime number
+ [Must be a prime number]
+ [Must be at least 18, Must be a prime number]
+```
+> `returnAsList` if true will return the erros as a list, or as a single string and will comibine mutiple errors in a string/
 
 ## Using with Flutter forms
 The library support direct working with flutter forms, just use .build()
 
 ```dart
-var ageValidator = V.required().isWholeNumber();
+var ageValidator = V.required().min(18);
 
 TextFormField(  
   decoration: InputDecoration(labelText: 'Age'),  
@@ -67,13 +101,12 @@ TextFormField(
 ),
 ```
 
-## 📝 Available Validators
+## Available Validators
 The library has following build in validators
 
-### **1️⃣ String Validators**
+### **1 String Validators**
 ```dart  
-V.string()  
- .required() .minLength(3) .maxLength(20) .email() .url() .regex(RegExp(r'^[a-zA-Z0-9]+'));  
+V.string().required().minLength(3) .maxLength(20).email();  
 ```  
 Available String Validators
 ``` dart
@@ -109,103 +142,101 @@ Available String Validators
  isoDatetime() /// Validates that the string follows the ISO 8601 datetime format (e.g., "2023-06-29T12:34:56Z").
 ```
 
-
-### **2️⃣ Number Validators**
+### **2 Number Validators**
 ```dart  
-V.number()  
- .required().min(18).max(99).positive().int().even();  
+V.number().required().min(18).max(99).positive().even();  
 ```  
 
 Available Number Validators
 ```dart
  required() /// Ensures the value is required (not null or NaN).
- min() /// Ensures the value is at least [minValue].
- max() /// Ensures the value is at most [maxValue].
- positive() /// Ensures the value is positive (> 0).
- negative() /// Ensures the value is negative (< 0).
- notZero() /// Ensures the value is not zero.
- even() /// Ensures the value is an even number.
- odd() /// Ensures the value is an odd number.
- precision() /// Ensures the value has at most [decimalPlaces] decimal places.
- isFinite() /// Ensures the value is a finite number (not infinite or NaN).
- isWholeNumber() /// Ensures the value is a whole number (integer).
- between() /// Ensures the value is between [minValue] and [maxValue], inclusive.
- multipleOf() /// Ensures the value is a multiple of [factor].
- safe() /// Ensures the value is within a safe integer range.
- isPalindrome() /// Ensures the number is a palindrome (reads the same forward and backward).
- isPrime() /// Ensures the number is a prime number.
- equalTo() /// Ensures the value is equal to [targetValue].
- notEqualTo() /// Ensures the value is not equal to [targetValue].
- absoluteValueMax() /// Ensures the absolute value is at most [maxValue].
+min() /// Ensures the value is at least [minValue].
+max() /// Ensures the value is at most [maxValue].
+positive() /// Ensures the value is positive (> 0).
+negative() /// Ensures the value is negative (< 0).
+notZero() /// Ensures the value is not zero.
+even() /// Ensures the value is an even number.
+odd() /// Ensures the value is an odd number.
+precision() /// Ensures the value has at most [decimalPlaces] decimal places.
+isFinite() /// Ensures the value is a finite number (not infinite or NaN).
+isWholeNumber() /// Ensures the value is a whole number (integer).
+between() /// Ensures the value is between [minValue] and [maxValue], inclusive.
+multipleOf() /// Ensures the value is a multiple of [factor].
+safe() /// Ensures the value is within a safe integer range.
+isPalindrome() /// Ensures the number is a palindrome (reads the same forward and backward).
+isPrime() /// Ensures the number is a prime number.
+equalTo() /// Ensures the value is equal to [targetValue].
+notEqualTo() /// Ensures the value is not equal to [targetValue].
+absoluteValueMax() /// Ensures the absolute value is at most [maxValue].
 ```
 
 
-### **3️⃣ Boolean Validators**
+### **3 Boolean Validators**
 ```dart  
 V.boolean().isTrue();  
 ```  
 Available Boolean Validators
 ```dart
  isTrue() /// Ensures the value is `true`.
- isFalse() /// Ensures the value is `false`.
- isTruthy() /// Ensures the value is truthy (e.g., "true", "yes", "on", "1").
- isFalsy() /// Ensures the value is falsy (e.g., "false", "no", "off", "0").
- matches() /// Ensures the value matches a specific boolean expectation.
- not() /// Ensures the value does **not** match a specific boolean expectation.
- xor() /// Ensures the value follows XOR logic with the given boolean.
- equals() /// Ensures the value is exactly equal to the expected boolean.
- notNull() /// Ensures the value is not null.
+isFalse() /// Ensures the value is `false`.
+isTruthy() /// Ensures the value is truthy (e.g., "true", "yes", "on", "1").
+isFalsy() /// Ensures the value is falsy (e.g., "false", "no", "off", "0").
+matches() /// Ensures the value matches a specific boolean expectation.
+not() /// Ensures the value does **not** match a specific boolean expectation.
+xor() /// Ensures the value follows XOR logic with the given boolean.
+equals() /// Ensures the value is exactly equal to the expected boolean.
+notNull() /// Ensures the value is not null.
 
 ```
 
-### **4️⃣ List Validators**
+### **4 List Validators**
 ```dart  
 V.list().minLength(2).maxLength(5).contains("item");  
 ```  
 Available List Validators
 ```dart
  minLength() /// Ensures the list has at least [length] items.
- maxLength() /// Ensures the list has at most [length] items.
- length() /// Ensures the list has exactly [length] items.
- unique() /// Ensures all elements in the list are unique.
- contains() /// Ensures the list contains [item].
+maxLength() /// Ensures the list has at most [length] items.
+length() /// Ensures the list has exactly [length] items.
+unique() /// Ensures all elements in the list are unique.
+contains() /// Ensures the list contains [item].
 ```
 
-### **5️⃣ Object Validation**
+### **5 Object Validation**
 ```dart  
-V.object({  
- "name": V.string().required(), "age": V.number().min(18),});  
+V.object({
+"name": V.string().required(), "age": V.number().min(18),});  
 ```  
 
 Available Object Validators
 ```dart
  shape() /// Defines the structure of the expected object. Throws an [ArgumentError] if duplicate keys are added.
- exactKeys() /// Ensures that only the specified [keys] are allowed in the object.
- allowExtraKeys() /// Allows the object to have extra keys beyond the defined schema.
- optionalFields() /// Specifies which fields are optional in the object.
- nonEmpty() /// Ensures the object is not empty.
- customValidation() /// Adds a custom validation rule that checks the entire object.
- deepEqual() /// Ensures the object matches the given [other] object exactly.
+exactKeys() /// Ensures that only the specified [keys] are allowed in the object.
+allowExtraKeys() /// Allows the object to have extra keys beyond the defined schema.
+optionalFields() /// Specifies which fields are optional in the object.
+nonEmpty() /// Ensures the object is not empty.
+customValidation() /// Adds a custom validation rule that checks the entire object.
+deepEqual() /// Ensures the object matches the given [other] object exactly.
 ```
 
-### **3️⃣ Date Validators**
+### **6 Date Validators**
 
 ```dart  
-V.object({  
- "name": V.string().required(), "age": V.number().min(18),});  
+V.object({
+"name": V.string().required(), "age": V.number().min(18),});  
 ```  
 
 Available Date Validators
 ```dart
  required() /// Ensures the date is not null or empty.
- before() /// Ensures the date is before the given [date].
- after() /// Ensures the date is after the given [date].
- between() /// Ensures the date falls between [start] and [end].
- exact() /// Ensures the date is exactly the given [target] date.
- notExact() /// Ensures the date is not exactly the given [target] date.
- weekdayOnly() /// Ensures the date falls on a weekday (Monday–Friday).
- futureOnly() /// Ensures the date falls on a weekend (Saturday or Sunday).
- pastOnly() /// Ensures the date is in the past.
+before() /// Ensures the date is before the given [date].
+after() /// Ensures the date is after the given [date].
+between() /// Ensures the date falls between [start] and [end].
+exact() /// Ensures the date is exactly the given [target] date.
+notExact() /// Ensures the date is not exactly the given [target] date.
+weekdayOnly() /// Ensures the date falls on a weekday (Monday–Friday).
+futureOnly() /// Ensures the date falls on a weekend (Saturday or Sunday).
+pastOnly() /// Ensures the date is in the past.
 ```
 
 ## Customize
@@ -230,19 +261,19 @@ The `CompositeValidator` allows you to apply multiple validation rules from diff
 ## Code Example
 
 ```dart
-import 'package:validator_lib/validator_lib.dart';  
-  
-void main() {  
- // Create individual validators 
- final numberValidator = V.number().isInteger(); 
- final rangeValidator = V.number().min(10).max(100);  
- // Combine them using CompositeValidator 
- final compositeValidator = CompositeValidator<int>([ numberValidator, rangeValidator, ]);  
- // Validate different inputs 
- compositeValidator.validate("25");  // ✅ Valid
- compositeValidator.validate("5");   // ❌ Must be at least 10
- compositeValidator.validate("150"); // ❌ Must be at most 100
- compositeValidator.validate("abc"); // ❌ Invalid number format}  
+import 'package:validator_lib/validator_lib.dart';
+
+void main() {
+  // Create individual validators 
+  final numberValidator = V.number().isInteger();
+  final rangeValidator = V.number().min(10).max(100);
+  // Combine them using CompositeValidator 
+  final compositeValidator = CompositeValidator<int>([ numberValidator, rangeValidator, ]);
+  // Validate different inputs 
+  compositeValidator.validate("25");  // ✅ Valid
+  compositeValidator.validate("5");   // ❌ Must be at least 10
+  compositeValidator.validate("150"); // ❌ Must be at most 100
+  compositeValidator.validate("abc"); // ❌ Invalid number format}  
 ```
 
 ## 🔥 Contributing
