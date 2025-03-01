@@ -218,9 +218,32 @@ Available Date Validators
 
 ## Composite Validator
 
+---
+title: Composite Validator Example
+description: Learn how to use the CompositeValidator to combine multiple validation rules.
+---
 
+# Example: Using the CompositeValidator
 
+The `CompositeValidator` allows you to apply multiple validation rules from different validators to a single value.
 
+## Code Example
+
+```dart
+import 'package:validator_lib/validator_lib.dart';  
+  
+void main() {  
+ // Create individual validators 
+ final numberValidator = V.number().isInteger(); 
+ final rangeValidator = V.number().min(10).max(100);  
+ // Combine them using CompositeValidator 
+ final compositeValidator = CompositeValidator<int>([ numberValidator, rangeValidator, ]);  
+ // Validate different inputs 
+ compositeValidator.validate("25");  // ✅ Valid
+ compositeValidator.validate("5");   // ❌ Must be at least 10
+ compositeValidator.validate("150"); // ❌ Must be at most 100
+ compositeValidator.validate("abc"); // ❌ Invalid number format}  
+```
 
 ## 🔥 Contributing
 
