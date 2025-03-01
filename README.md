@@ -23,8 +23,8 @@ To use this validation library in your Dart or Flutter project, follow these ste
 Add the dependency to your `pubspec.yaml`:
 
 ```yaml  
-dependencies:  
- helium_validator: 0.0.8  
+dependencies:
+  helium_validator: 0.0.8  
 ```  
 
 Then, run:
@@ -70,7 +70,7 @@ Output :
 import 'package:helium_validator/helium_validator.dart';
 
 // define the validator
-  var ageValidator = V.number().required().min(18).isPrime();
+var ageValidator = V.number().required().min(18).isPrime();
 
 // use validate for validation
 print(ageValidator.validate(returnAllErrors: true, '22'));
@@ -95,9 +95,9 @@ The library support direct working with flutter forms, just use .build()
 ```dart
 var ageValidator = V.required().min(18);
 
-TextFormField(  
-  decoration: InputDecoration(labelText: 'Age'),  
-  validator: ageValidator.build(),  
+TextFormField(
+decoration: InputDecoration(labelText: 'Age'),
+validator: ageValidator.build(),
 ),
 ```
 
@@ -241,11 +241,85 @@ pastOnly() /// Ensures the date is in the past.
 
 ## Customize
 
+You can customize your error messages.
 
-## Error Handling
+### **Basic Example**
+```dart  
+import 'package:helium_validator/helium_validator.dart';
 
+  // define the validator
+  var emailValidator = V.string().required().email(message: "Please Enter a valid email");
+  var ageValidator = V.number().required().min(18, message: "You must be 18 or older to register");
+
+    // use .validate for validation
+    print(ageValidator.validate('22'));
+    print(ageValidator.validate('3'));
+
+    print(emailValidator.validate("advait@gmail.com"));
+    print(emailValidator.validate("advaitgmail.com"));
+```   
+
+Output :
+```
+I/flutter ( 5192): null
+I/flutter ( 5192): You must be 18 or older to register
+I/flutter ( 5192): null
+I/flutter ( 5192): Please Enter a valid email
+```
 
 ## Custom Validator
+
+Create your own custom validator
+
+### **Basic Example**
+```dart  
+import 'package:helium_validator/helium_validator.dart';
+
+  // define the validator
+    final passwordValidator = V.custom()
+      ..addRule((value) => (value ?? "").isEmpty ? "Password is required" : null)
+      ..addRule((value) => (value?.length ?? 0) < 8 ? "Password must be at least 8 characters" : null)
+      ..addRule((value) => !RegExp(r'[A-Z]').hasMatch(value ?? "") ? "Must contain an uppercase letter" : null)
+      ..addRule((value) => !RegExp(r'[0-9]').hasMatch(value ?? "") ? "Must contain a number" : null)
+      ..addRule((value) => !RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value ?? "") ? "Must contain a special character" : null)
+      ..addRule((value) => _hasConsecutiveChars(value ?? "") ? "Password must not contain consecutive characters" : null)
+      ..addRule((value) => _isCommonPassword(value ?? "") ? "Password is too common" : null);
+
+// Helper method to check if the password is a common password
+bool _isCommonPassword(String value) {
+  const commonPasswords = [
+    "password", "123456", "123456789", "qwerty", "abc123", "password1", "12345", "letmein", "welcome", "admin"
+  ];
+  return commonPasswords.contains(value.toLowerCase());
+}
+
+// Helper method to check for consecutive characters
+bool _hasConsecutiveChars(String value) {
+  for (int i = 0; i < value.length - 2; i++) {
+    if (value.codeUnitAt(i) + 1 == value.codeUnitAt(i + 1) && value.codeUnitAt(i + 1) + 1 == value.codeUnitAt(i + 2)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+    print(passwordValidator.validate("Short1"));
+    print(passwordValidator.validate("testpassword1"));
+	print(passwordValidator.validate("abc123"));
+    print(passwordValidator.validate("TestPass1@"));
+
+```   
+
+Output :
+```
+I/flutter ( 5192): null
+I/flutter ( 5192): You must be 18 or older to register
+I/flutter ( 5192): null
+I/flutter ( 5192): Please Enter a valid email
+```
+
+
+
 
 ## Composite Validator
 
