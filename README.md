@@ -64,7 +64,7 @@ Output :
 
 > To return all the validation errors you can pass the arg - `returnAllErrors = true` this will return all the errors as list.
 
-**Return all validation errors**
+### **Return all validation errors**
 
 ```dart  
 import 'package:helium_validator/helium_validator.dart';
@@ -110,36 +110,36 @@ V.string().required().minLength(3) .maxLength(20).email();
 ```  
 Available String Validators
 ``` dart
- required() // Ensures the field is not null or empty
- minLength() // Ensures the string has at least [length] characters.
- maxLength() // Ensures the string has at most [length] characters.
- length() // Ensures the string has exactly [length] characters.
- email() /// Validates that the string is a properly formatted email.
- url() // Validates that the string is a properly formatted URL.
- contains() /// Ensures the string contains the [expected] substring.
- startsWith() // /// Ensures the string starts with the given [prefix].
- uuid() /// Ensures the string is a valid UUID (v4 format).
- datetime() /// Ensures the string is a valid datetime (YYYY-MM-DD HH:mm:ss).
- date() /// Ensures the string is a valid date (YYYY-MM-DD).
- time() /// Ensures the string is a valid time (HH:mm:ss).
- ip() /// Ensures the string is a valid IP address (IPv4 or IPv6).
- cidr() /// Ensures the string is a valid CIDR notation.
- json() /// Ensures the string is a valid JSON.
- ascii() /// Ensures the string contains only ASCII characters.
- alpha() /// Ensures the string contains only alphabetic characters (A-Z, a-z).
- alphanumeric() /// Ensures the string contains only alphanumeric characters (A-Z, a-z, 0-9).
- isNumeric() /// Ensures string contains only numeric digits (0-9)
- slug() /// Ensures the string is a valid slug (lowercase,   alphanumeric, hyphens).
- creditCard() /// Ensures the string is a valid credit card number.
- phoneNumber() /// Ensures the string is a valid phone number.
- hexColor() /// Ensures the string is a valid hexadecimal color.
- base64() /// Ensures the string is in valid Base64 encoding.
- isPalindrome() /// Ensures the string is a palindrome (reads the same forward and backward).
- emoji() /// Validates that the string contains at least one emoji.
- nanoid() /// Validates that the string is a valid NanoID (alphanumeric, underscore, or hyphen, with at least 10 characters).
- cuid() /// Validates that the string is a valid CUID (must start with 'c' followed by at least 24 lowercase alphanumeric characters).
- cuid2() /// Validates that the string is a valid CUID2 (24+ lowercase alphanumeric characters, excluding 'c' as the first character).
- isoDatetime() /// Validates that the string follows the ISO 8601 datetime format (e.g., "2023-06-29T12:34:56Z").
+required() // Ensures the field is not null or empty
+minLength() // Ensures the string has at least [length] characters.
+maxLength() // Ensures the string has at most [length] characters.
+length() // Ensures the string has exactly [length] characters.
+email() /// Validates that the string is a properly formatted email.
+url() // Validates that the string is a properly formatted URL.
+contains() /// Ensures the string contains the [expected] substring.
+startsWith() // /// Ensures the string starts with the given [prefix].
+uuid() /// Ensures the string is a valid UUID (v4 format).
+datetime() /// Ensures the string is a valid datetime (YYYY-MM-DD HH:mm:ss).
+date() /// Ensures the string is a valid date (YYYY-MM-DD).
+time() /// Ensures the string is a valid time (HH:mm:ss).
+ip() /// Ensures the string is a valid IP address (IPv4 or IPv6).
+cidr() /// Ensures the string is a valid CIDR notation.
+json() /// Ensures the string is a valid JSON.
+ascii() /// Ensures the string contains only ASCII characters.
+alpha() /// Ensures the string contains only alphabetic characters (A-Z, a-z).
+alphanumeric() /// Ensures the string contains only alphanumeric characters (A-Z, a-z, 0-9).
+isNumeric() /// Ensures string contains only numeric digits (0-9)
+slug() /// Ensures the string is a valid slug (lowercase,   alphanumeric, hyphens).
+creditCard() /// Ensures the string is a valid credit card number.
+phoneNumber() /// Ensures the string is a valid phone number.
+hexColor() /// Ensures the string is a valid hexadecimal color.
+base64() /// Ensures the string is in valid Base64 encoding.
+isPalindrome() /// Ensures the string is a palindrome (reads the same forward and backward).
+emoji() /// Validates that the string contains at least one emoji.
+nanoid() /// Validates that the string is a valid NanoID (alphanumeric, underscore, or hyphen, with at least 10 characters).
+cuid() /// Validates that the string is a valid CUID (must start with 'c' followed by at least 24 lowercase alphanumeric characters).
+cuid2() /// Validates that the string is a valid CUID2 (24+ lowercase alphanumeric characters, excluding 'c' as the first character).
+isoDatetime() /// Validates that the string follows the ISO 8601 datetime format (e.g., "2023-06-29T12:34:56Z").
 ```
 
 ### **2 Number Validators**
@@ -149,7 +149,7 @@ V.number().required().min(18).max(99).positive().even();
 
 Available Number Validators
 ```dart
- required() /// Ensures the value is required (not null or NaN).
+required() /// Ensures the value is required (not null or NaN).
 min() /// Ensures the value is at least [minValue].
 max() /// Ensures the value is at most [maxValue].
 positive() /// Ensures the value is positive (> 0).
@@ -177,7 +177,7 @@ V.boolean().isTrue();
 ```  
 Available Boolean Validators
 ```dart
- isTrue() /// Ensures the value is `true`.
+isTrue() /// Ensures the value is `true`.
 isFalse() /// Ensures the value is `false`.
 isTruthy() /// Ensures the value is truthy (e.g., "true", "yes", "on", "1").
 isFalsy() /// Ensures the value is falsy (e.g., "false", "no", "off", "0").
@@ -195,7 +195,7 @@ V.list().minLength(2).maxLength(5).contains("item");
 ```  
 Available List Validators
 ```dart
- minLength() /// Ensures the list has at least [length] items.
+minLength() /// Ensures the list has at least [length] items.
 maxLength() /// Ensures the list has at most [length] items.
 length() /// Ensures the list has exactly [length] items.
 unique() /// Ensures all elements in the list are unique.
@@ -210,7 +210,7 @@ V.object({
 
 Available Object Validators
 ```dart
- shape() /// Defines the structure of the expected object. Throws an [ArgumentError] if duplicate keys are added.
+shape() /// Defines the structure of the expected object. Throws an [ArgumentError] if duplicate keys are added.
 exactKeys() /// Ensures that only the specified [keys] are allowed in the object.
 allowExtraKeys() /// Allows the object to have extra keys beyond the defined schema.
 optionalFields() /// Specifies which fields are optional in the object.
@@ -228,7 +228,7 @@ V.object({
 
 Available Date Validators
 ```dart
- required() /// Ensures the date is not null or empty.
+required() /// Ensures the date is not null or empty.
 before() /// Ensures the date is before the given [date].
 after() /// Ensures the date is after the given [date].
 between() /// Ensures the date falls between [start] and [end].
@@ -307,7 +307,6 @@ bool _hasConsecutiveChars(String value) {
     print(passwordValidator.validate("testpassword1"));
 	print(passwordValidator.validate("abc123"));
     print(passwordValidator.validate("TestPass1@"));
-
 ```   
 
 Output :
@@ -335,7 +334,7 @@ The `CompositeValidator` allows you to apply multiple validation rules from diff
 ## Code Example
 
 ```dart
-import 'package:validator_lib/validator_lib.dart';
+import 'package:helium_validator/helium_validator.dart';
 
 void main() {
   // Create individual validators 
@@ -350,13 +349,13 @@ void main() {
   compositeValidator.validate("abc"); // ❌ Invalid number format}  
 ```
 
-## 🔥 Contributing
+## Contributing
 
 Contributions are welcome! Feel free to submit issues or pull requests to improve this library.
   
 ---  
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License.  
  
