@@ -26,7 +26,7 @@ class CustomValidator<T> extends Validator<T> {
     if (input == null) return null;
 
     if (_customParser != null) {
-      return _customParser!(input);
+      return _customParser(input);
     }
 
     if (T == String) {

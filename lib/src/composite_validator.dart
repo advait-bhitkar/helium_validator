@@ -24,9 +24,7 @@ class CompositeValidator<T> extends Validator<T> {
       try {
         final parsed = validator.parseValue(input);
         if (parsed != null) return parsed;
-      } catch (e) {
-        print("Warning: Validator failed to parse value '$input' - $e");
-      }
+      } catch (e) {}
     }
     return null; // No valid parsing found
   }

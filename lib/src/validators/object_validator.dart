@@ -156,7 +156,7 @@ class ObjectValidator extends Validator<Map<String, dynamic>> {
       // Handle type mismatch gracefully
       final expectedType = validator.runtimeType;  // Getting the expected validator type
 
-      if (fieldValue != null && expectedType != null && fieldValue.runtimeType != expectedType) {
+      if (fieldValue != null && fieldValue.runtimeType != expectedType) {
         // Here, you can customize the message based on your expected types
         String typeErrorMessage = "$key: Must be a valid ${_getExpectedTypeMessage(expectedType)}";
         errors.add(typeErrorMessage);
@@ -212,10 +212,6 @@ class ObjectValidator extends Validator<Map<String, dynamic>> {
   @override
   Object? validateStrict(Map<String, dynamic>? value, {bool returnAllErrors = false, bool returnAsList = false}) {
     if (value == null) return invalidTypeMessage;
-
-    if (value is! Map<String, dynamic>) {
-      return "Invalid object format";
-    }
 
     List<String> errors = [];
 
