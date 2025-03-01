@@ -1,7 +1,7 @@
 name: helium_validator
 description: "A lightweight, powerful, and extensible validation library for Flutter."
-version: 0.0.1
-homepage: https://github.com/advait-bhitkar/helium-flutter-validator
+version: 0.0.8
+homepage: https://github.com/advait-bhitkar/helium_validator
 
 environment:
   sdk: ^3.6.1
