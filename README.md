@@ -4,6 +4,9 @@ A lightweight, powerful, and extensible validation library for Flutter.
 
 If you find this library helpful, please consider supporting me by giving it a star on [GitHub](https://github.com/advait-bhitkar/helium_validator "GitHub").
 
+## Preview
+![Helium Validator Preview](example/assets/preview.gif)
+
 ## Introduction
 Helium Flutter Validator is a powerful and flexible validation library for Flutter.
 
